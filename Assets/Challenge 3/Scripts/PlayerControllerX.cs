@@ -16,8 +16,9 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
+    public float upperBound;
 
-    public float upperBound; // Variable que indica el limite superior
+    public AudioClip bounceSound;
 
     // Start is called before the first frame update
     void Start()
@@ -36,10 +37,10 @@ public class PlayerControllerX : MonoBehaviour
     {
         float currentY = transform.position.y; // Obtenemos la ubicacion actuak
         // While space is pressed and player is low enough, float up
-        if (Input.GetKeyDown(KeyCode.Space) && !gameOver && currentY < upperBound) // Verificamos que el globo no sobrepase el limite
+        if (Input.GetKeyDown(KeyCode.Space) && !gameOver && currentY < upperBound)
         {
             playerRb.AddForce(Vector3.up * 5 * floatForce);
-        } else if(currentY > upperBound) // Si El globo sobrepasa el limite este sera empujado hacia abajo
+        } else if(currentY > upperBound)
         {
             playerRb.AddForce(Vector3.down * floatForce * 0.5f, ForceMode.Force);
         }
@@ -64,6 +65,14 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
 
+        }else if (other.gameObject.CompareTag("Ground") && !gameOver)
+        {
+            // 1. Aplicar la fuerza de impulso hacia arriba
+            float bounceForce = 15f;
+            playerRb.AddForce(Vector3.up * bounceForce, ForceMode.Impulse);
+
+            // 2. Reproducir el sonido de rebote
+            playerAudio.PlayOneShot(bounceSound, 1.0f);
         }
 
     }
