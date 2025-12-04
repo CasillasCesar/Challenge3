@@ -17,6 +17,7 @@ public class PlayerControllerX : MonoBehaviour
     public AudioClip moneySound;
     public AudioClip explodeSound;
 
+    public float upperBound; // Variable que indica el limite superior
 
     // Start is called before the first frame update
     void Start()
@@ -33,10 +34,14 @@ public class PlayerControllerX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float currentY = transform.position.y; // Obtenemos la ubicacion actuak
         // While space is pressed and player is low enough, float up
-        if (Input.GetKeyDown(KeyCode.Space) && !gameOver)
+        if (Input.GetKeyDown(KeyCode.Space) && !gameOver && currentY < upperBound) // Verificamos que el globo no sobrepase el limite
         {
             playerRb.AddForce(Vector3.up * 5 * floatForce);
+        } else if(currentY > upperBound) // Si El globo sobrepasa el limite este sera empujado hacia abajo
+        {
+            playerRb.AddForce(Vector3.down * floatForce * 0.5f, ForceMode.Force);
         }
     }
 
